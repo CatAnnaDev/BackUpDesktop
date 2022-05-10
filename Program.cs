@@ -160,7 +160,7 @@ namespace BackUpDesktop
 
         private static async Task StartChocoInstallAsync()
         {
-            Console.WriteLine("Select foler where is saved packages.config");
+            Console.WriteLine("Select foler where is saved ChocolateyBackup.config");
 
             // Select Back up folder
             var dlg = new FolderPicker();
@@ -177,7 +177,7 @@ namespace BackUpDesktop
             Thread.Sleep(3000);
             await Exec("powershell.exe", "Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iwr https://community.chocolatey.org/install.ps1 -UseBasicParsing | iex");
 
-            await Exec("cmd.exe", $"choco install {BackUpPath}\\packages.config");
+            await Exec("cmd.exe", $"choco install {BackUpPath}\\ChocolateyBackup.config");
         }
 
         private static Task Exec(string filename, string cmd)
