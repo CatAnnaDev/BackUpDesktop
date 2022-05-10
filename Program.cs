@@ -35,11 +35,6 @@ namespace BackUpDesktop
             }
         }
 
-        // choco install <path-to-exported-file> -y
-        // choco upgrade chocolatey -y
-
-        // Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iwr https://community.chocolatey.org/install.ps1 -UseBasicParsing | iex
-
         // Winget install Process
         private static async Task StartWingetAsync()
         {
@@ -59,8 +54,7 @@ namespace BackUpDesktop
             Console.WriteLine("Please wait!");
             Thread.Sleep(3000);
 
-            await Exec("cmd.exe", "winget import -i {files[0]} --accept-source-agreements --accept-package-agreements");
-            // winget install -e -h --accept-source-agreements --accept-package-agreements --id $app.name
+            await Exec("cmd.exe", $"winget import -i {files[0]} --accept-source-agreements --accept-package-agreements");
         }
 
         // Backup Process
@@ -126,6 +120,7 @@ namespace BackUpDesktop
                     ChocoConf = false;
                     // Chocolatey install
                     await Exec("powershell.exe", "Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iwr https://community.chocolatey.org/install.ps1 -UseBasicParsing | iex");
+                    await Exec("cmd.exe", $"choco upgrade chocolatey -y");
                     // Make a Chocolatey export 
                     await Exec("cmd.exe", $"choco export --output-file-path=\"'{BackUpPath}\\ChocolateyBackup.config'\"");
                 }
@@ -176,7 +171,7 @@ namespace BackUpDesktop
             Console.WriteLine("Please wait!");
             Thread.Sleep(3000);
             await Exec("powershell.exe", "Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iwr https://community.chocolatey.org/install.ps1 -UseBasicParsing | iex");
-
+            await Exec("cmd.exe", $"choco upgrade chocolatey -y");
             await Exec("cmd.exe", $"choco install {BackUpPath}\\ChocolateyBackup.config");
         }
 
@@ -188,13 +183,9 @@ namespace BackUpDesktop
             startInfo.FileName = filename;
             startInfo.Arguments = $"/C " + cmd;
             process.StartInfo = startInfo;
-            //startInfo.CreateNoWindow = true;
             process.Start();
             process.WaitForExit();
-            process.Close();
             return Task.CompletedTask;
         }
-
-
     }
 }
