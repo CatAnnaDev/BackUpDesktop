@@ -24,7 +24,7 @@ namespace BackUpDesktop
 
     public static class KnownFolders
     {
-        private static readonly Dictionary<KnownFolder, Guid> _guids = new()
+         private static readonly Dictionary<KnownFolder, Guid> _guids = new()
         {
             [KnownFolder.Contacts] = new("56784854-C6CB-462B-8169-88E350ACB882"),
             [KnownFolder.Downloads] = new("374DE290-123F-4565-9164-39C4925E467B"),
@@ -44,8 +44,22 @@ namespace BackUpDesktop
         };
         private static List<string> allPath = new();
 
+        public static bool check(string s)
+        {
+            return (string.IsNullOrEmpty(s) || string.IsNullOrWhiteSpace(s) || s.StartsWith("Path")) ? true : false;
+        }
+
         public static List<string> GetPath()
         {
+            foreach (var jsonpath in ConfigInit.Config.Path)
+            {
+                if (!check(jsonpath)) {
+                    Console.WriteLine($"Custom path: {jsonpath}");
+                    allPath.Add(jsonpath);
+                }
+
+            }
+
             foreach (KeyValuePair<KnownFolder, string> entry in path)
             {
                 allPath.Add(entry.Value);

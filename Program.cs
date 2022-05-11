@@ -1,20 +1,21 @@
 ﻿using Microsoft.Win32;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
 
 namespace BackUpDesktop
 {
     internal class Program
     {
-        public static string BackUpPath { get; private set; }
+        public static string? BackUpPath { get; private set; }
+        private static ConfigInit? _configinit;
 
-        [STAThread]
-        static async Task Main(string[] args)
+        [MTAThread]
+        static void Main(string[] args) => Init();
+
+        private static async Task Init()
         {
+            _configinit = new ConfigInit();
+            await InitializeGlobalDataAsync();
+
             Console.Write("1: Backup\n" +
                           "2: Winget install\n" +
                           "3: Chocolatey install\n" +
@@ -24,15 +25,20 @@ namespace BackUpDesktop
             switch (sw)
             {
                 case 1:
-                    StartBackupAsync();
+                    await StartBackupAsync();
                     break;
                 case 2:
-                    StartWingetAsync();
+                    await StartWingetAsync();
                     break;
                 case 3:
-                    StartChocoInstallAsync();
-                        break;
+                    await StartChocoInstallAsync();
+                    break;
             }
+        }
+
+        private static async Task InitializeGlobalDataAsync()
+        {
+            await _configinit.InitializeAsync();
         }
 
         // Winget install Process
